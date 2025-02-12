@@ -62,3 +62,4 @@ Dcu
 /Tools/NativeBridgeFileGenerator/OutputAndroid
 /Tools/NativeBridgeFileGenerator/OutputIOS
 /Tools/AppIconGenerator/Output
+.DS_Store
