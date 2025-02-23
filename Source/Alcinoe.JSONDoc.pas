@@ -1925,22 +1925,25 @@ Var Buffer: AnsiString;
     else result := True;
   end;
 
-var BOMSequence: integer;
+var InitialStreamPosition: int64;
+    BOMSequence: integer;
     c: ansiChar;
 
 Begin
 
-  //init result
+  //--
   result := ntText;
 
-  //init Buffer
+  //--
   if assigned(RawJSONStream) then begin
+    InitialStreamPosition := RawJSONStream.Position;
     Buffer := '';
     BufferLength := 0;
     BufferPos := 1;
     ExpandBuffer;
   end
   else begin
+    InitialStreamPosition := 0; // To hide warning bug
     Buffer := RawJSONString;
     BufferLength := length(RawJSONString);
     BufferPos := 1;
@@ -1970,6 +1973,10 @@ Begin
       break;
     end;
   end;
+
+  //--
+  if assigned(RawJSONStream) then
+    RawJSONStream.Position := InitialStreamPosition;
 
 end;
 
@@ -8256,7 +8263,7 @@ begin
 end;
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8340,7 +8347,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8421,7 +8428,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8475,7 +8482,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8517,7 +8524,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8586,7 +8593,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*********************}
 {$ZEROBASEDSTRINGS OFF}
@@ -8655,7 +8662,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*****************************************************}
 procedure ALJSONDocErrorW(const Msg: String); overload;
@@ -8704,10 +8711,10 @@ Var BufferLength: Integer;
     c: Char;
 Begin
 
-  //init result
+  //--
   result := ntText;
 
-  //init Buffer
+  //--
   BufferLength := length(Buffer);
   BufferPos := 1;
 
@@ -8726,7 +8733,7 @@ Begin
 end;
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {***************************************************}
 class function TALJSONDocumentW.Create: TALJSONNodeW;
@@ -11663,7 +11670,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {*************************************************************}
 {Last version of the spec: http://bsonspec.org/#/specification}
@@ -12778,7 +12785,7 @@ end;
 {$WARN WIDECHAR_REDUCED ON}
 {$IF defined(ALZeroBasedStringsON)}
   {$ZEROBASEDSTRINGS ON}
-{$IFEND}
+{$ENDIF}
 
 {***********************************}
 {Saves the JSON document to a stream.

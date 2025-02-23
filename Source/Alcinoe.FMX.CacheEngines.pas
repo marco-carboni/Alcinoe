@@ -21,7 +21,7 @@ type
   private
     FLock: TLightweightMREW;
     FRefCount: Integer;
-    FEntries: TArray<Tarray<TEntry>>;
+    FEntries: TArray<Tarray<TEntry>>; // [Index][SubIndex]
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -40,6 +40,7 @@ implementation
 
 uses
   FMX.Types3D,
+  FMX.Graphics,
   {$IF defined(ALSkiaAvailable)}
   System.Skia.API,
   {$ENDIF}
@@ -54,14 +55,14 @@ begin
   FEntries := nil;
 end;
 
-{********************************************}
+{*******************************************}
 destructor TALBufDrawableCacheEngine.Destroy;
 begin
   CLearEntries;
   inherited;
 end;
 
-{*********************************************************************************}
+{*************************************************************************************}
 function TALBufDrawableCacheEngine.HasEntry(const AIndex, ASubIndex: Integer): Boolean;
 begin
   {$IF defined(debug)}
@@ -78,7 +79,7 @@ begin
   end;
 end;
 
-{*********************************************************************************}
+{***************************************************************************************************************************************}
 function TALBufDrawableCacheEngine.TryGetEntry(const AIndex, ASubIndex: Integer; out ADrawable: TALDrawable; out ARect: TRectF): Boolean;
 begin
   {$IF defined(debug)}
@@ -101,21 +102,21 @@ begin
   end;
 end;
 
-{*********************************************************************************}
+{********************************************************************************************************************}
 function TALBufDrawableCacheEngine.TryGetEntry(const AIndex, ASubIndex: Integer; out ADrawable: TALDrawable): Boolean;
 begin
   var LRect: TRectF;
   Result := TryGetEntry(AIndex, ASubIndex, ADrawable, LRect);
 end;
 
-{*********************************************************************************}
+{***********************************************************************************************************}
 function TALBufDrawableCacheEngine.TryGetEntry(const AIndex, ASubIndex: Integer; out ARect: TRectF): Boolean;
 begin
   var LDrawable: TALDrawable;
   Result := TryGetEntry(AIndex, ASubIndex, LDrawable, ARect);
 end;
 
-{*********************************************************************************}
+{*******************************************************************************************************************************************}
 function TALBufDrawableCacheEngine.TrySetEntry(const AIndex, ASubIndex: Integer; Const ADrawable: TALDrawable; const ARect: TRectF): Boolean;
 begin
   {$IF defined(debug)}
@@ -147,7 +148,7 @@ begin
   end;
 end;
 
-{********************************************}
+{***********************************************}
 procedure TALBufDrawableCacheEngine.CLearEntries;
 begin
   FLock.BeginWrite;
@@ -161,14 +162,14 @@ begin
   end;
 end;
 
-{********************************************}
+{***************************************************}
 procedure TALBufDrawableCacheEngine.DecreaseRefCount;
 begin
   If AtomicDecrement(FRefCount) = 0 then
     Free;
 end;
 
-{********************************************}
+{*****************************************************************************}
 function TALBufDrawableCacheEngine.IncreaseRefCount: TALBufDrawableCacheEngine;
 begin
   AtomicIncrement(FrefCount);
